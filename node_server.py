@@ -215,21 +215,19 @@ def register_new_peers():
     # Hacemos una peticion interna para revisar si ya existe el curp dentro de los camps
     headers = {'Content-Type': "application/json"}
     response = requests.get('{}chain'.format(request.host_url), headers=headers)
-    print(response.content)
     data = json.loads(response.content)
-    print("DATA: ", data)
     current_peers = data['peers']
     if curp in current_peers:
+        # Mandar error de que este curp ya existe
         print("ESTE CURP YA EXISTE")
-    else: 
+    else:
+        # Si no existe, llamar a la base de datos del SAT para pedir la llave pública
+        # Agregar las llaves públicas a los peers
         print("AGREGANDO EL NUEVO CURP")
 
-    # Si no hay otro usuario registrado con ese curp, consultamos a la base de datos del ine y le pedimos su llave publica y su llave privada
-    # Regresamos las llaves
-    # 
-    # Add the node to the peer list
-    peer = {'curp': curp, 'public_key': 'asiduhfasidufhadsiufh', 'node_address': node_address}
-    peers[peer['curp']] = peer
+        # Add the node to the peer list
+        peer = {'curp': curp, 'public_key': '123', 'node_address': node_address}
+        peers[peer['curp']] = peer
 
     # Return the consensus blockchain to the newly registered node
     # so that he can sync
