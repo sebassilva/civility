@@ -142,7 +142,7 @@ blockchain = Blockchain()
 blockchain.create_genesis_block()
 
 # the address to other participating members of the network
-peers = set()
+peers = dict()
 
 
 # endpoint to submit a new transaction. This will be used by
@@ -150,11 +150,11 @@ peers = set()
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
-    required_fields = ["author", "content"]
+    required_fields = ['user', 'person', 'grade', 'comment', 'signature']
 
     for field in required_fields:
         if not tx_data.get(field):
-            return "Invalid transaction data", 404
+            return "Favor de llenar todos los campos.", 401
 
     tx_data["timestamp"] = time.time()
 
@@ -171,9 +171,11 @@ def get_chain():
     chain_data = []
     for block in blockchain.chain:
         chain_data.append(block.__dict__)
+    
+    print(peers)
     return json.dumps({"length": len(chain_data),
                        "chain": chain_data,
-                       "peers": list(peers)})
+                       "peers": peers})
 
 
 # endpoint to request the node to mine the unconfirmed
@@ -197,12 +199,37 @@ def mine_unconfirmed_transactions():
 # endpoint to add new peers to the network.
 @app.route('/register_node', methods=['POST'])
 def register_new_peers():
-    node_address = request.get_json()["node_address"]
-    if not node_address:
-        return "Invalid data", 400
+    print("Registrando nuevo nodo...")
+    tx_data = request.get_json()
+    required_fields = ['user', 'password', 'first_name', 'last_name', 'curp']
 
+    for field in required_fields:
+        if not tx_data.get(field):
+            return "Favor de llenar todos los campos.", 401
+
+
+    # Revisamos si no existe otro usuario registrado con el mismo curp
+    curp = tx_data.get('curp')
+    node_address = tx_data.get('node_address')
+    
+    # Hacemos una peticion interna para revisar si ya existe el curp dentro de los camps
+    headers = {'Content-Type': "application/json"}
+    response = requests.get('{}chain'.format(request.host_url), headers=headers)
+    print(response.content)
+    data = json.loads(response.content)
+    print("DATA: ", data)
+    current_peers = data['peers']
+    if curp in current_peers:
+        print("ESTE CURP YA EXISTE")
+    else: 
+        print("AGREGANDO EL NUEVO CURP")
+
+    # Si no hay otro usuario registrado con ese curp, consultamos a la base de datos del ine y le pedimos su llave publica y su llave privada
+    # Regresamos las llaves
+    # 
     # Add the node to the peer list
-    peers.add(node_address)
+    peer = {'curp': curp, 'public_key': 'asiduhfasidufhadsiufh', 'node_address': node_address}
+    peers[peer['curp']] = peer
 
     # Return the consensus blockchain to the newly registered node
     # so that he can sync

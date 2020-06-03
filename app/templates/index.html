@@ -7,8 +7,19 @@
 	<center>
 	<form action="/submit" id="textform" method="post">
 	    <textarea name="content" rows="4" cols="50" placeholder="Just write whatever you want to..."></textarea>
+	    <textarea name="author" rows="4" cols="50" placeholder="Just write whatever you want to..."></textarea>
 	    <br>
-	    <input type="text" name="author" placeholder="Your name">
+	    <br>
+	    <input type="text" name="user" placeholder="Usuario actual">
+	    <br>
+	    <input type="text" name="person" placeholder="Persona por la que se va a votar">
+	    <br>
+	    <input type="text" name="grade" placeholder="Calificación">
+	    <br>
+	    <input type="text" name="comment" placeholder="Comentario">
+	    <br>
+	    <input type="text" name="signature" placeholder="Firma digital	">
+	    <br>
 	    <input type="submit" value="Post">
 	</form>
 	</center>
@@ -17,6 +28,35 @@
 
 	<a href="{{node_address}}/mine" target="_blank"><button>Request to mine</button></a>
 	<a href="/"><button>Resync</button></a>
+
+
+	<br>
+	<br>
+	<br>
+	<br>
+
+	<center>
+		<h2>Registrar nuevos usuarios</h2>
+		<form action="/submit_new_user" id="textform" method="post">
+			<br>
+			<br>
+			<input type="text" name="user" placeholder="Usuario nuevo">
+			<br>
+			<input type="text" name="password" placeholder="Contraseña">
+			<br>
+			<input type="text" name="first_name" placeholder="Nombre">
+			<br>
+			<input type="text" name="last_name" placeholder="Apellidos">
+			<br>
+			<input type="text" name="curp" placeholder="Curp">
+			<input type="text" name="node_address" placeholder="node_address">
+			<br>
+			<input type="submit" value="Registrar">
+		</form>
+		</center>
+
+
+
 
 	<div style="margin: 20px;">
 

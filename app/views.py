@@ -53,10 +53,26 @@ def submit_textarea():
     post_content = request.form["content"]
     author = request.form["author"]
 
+    user = request.form["user"]
+    person = request.form["person"]
+    grade = request.form["grade"]
+    comment = request.form["comment"]
+    signature = request.form["signature"]
+
+
+
+
     post_object = {
         'author': author,
         'content': post_content,
+        'user': user,
+        'person': person,
+        'grade': grade,
+        'comment': comment,
+        'signature': signature,
     }
+
+    # TODO: Validate data
 
     # Submit a transaction
     new_tx_address = "{}/new_transaction".format(CONNECTED_NODE_ADDRESS)
@@ -66,6 +82,48 @@ def submit_textarea():
                   headers={'Content-type': 'application/json'})
 
     return redirect('/')
+
+
+
+@app.route('/submit_new_user', methods=['POST'])
+def register_new_user():
+    """
+    Endpoint to create a new peer
+    This just passes the information to the node server it is connected to :)
+    """
+
+    user = request.form["user"]
+    password = request.form["password"]
+    first_name = request.form["first_name"]
+    last_name = request.form["last_name"]
+    curp = request.form["curp"]
+    node_address = request.form["node_address"]
+
+
+    post_object = {
+        'user': user,
+        'password': password,
+        'first_name': first_name,
+        'last_name': last_name,
+        'curp': curp,
+        'node_address': node_address,
+    }
+    print('POST OBJETC', post_object)
+
+    # TODO: Validate data
+
+    # Submit a transaction
+    new_tx_address = "{}/register_node".format(CONNECTED_NODE_ADDRESS)
+
+    requests.post(new_tx_address,
+                  json=post_object,
+                  headers={'Content-type': 'application/json'})
+    print(new_tx_address)
+
+    return redirect('/')
+
+
+
 
 
 def timestamp_to_string(epoch_time):
