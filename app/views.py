@@ -50,7 +50,6 @@ def submit_textarea():
     """
     Endpoint to create a new transaction via our application.
     """
-    post_content = request.form["content"]
 
     user = request.form["user"]
     person = request.form["person"]
@@ -62,11 +61,10 @@ def submit_textarea():
 
 
     post_object = {
-        'content': post_content,
         'user': user,
         'person': person,
-        'grade': grade,
-        'comment': comment,
+        'last_grade': grade,
+        'last_comment': comment,
         'signature': signature,
     }
 
@@ -75,9 +73,10 @@ def submit_textarea():
     # Submit a transaction
     new_tx_address = "{}/new_transaction".format(CONNECTED_NODE_ADDRESS)
 
-    requests.post(new_tx_address,
+    response = requests.post(new_tx_address,
                   json=post_object,
                   headers={'Content-type': 'application/json'})
+    print(response.content)
 
     return redirect('/')
 

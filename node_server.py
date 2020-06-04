@@ -1,13 +1,9 @@
-from hashlib import sha256
 import json
 import time
 
 from flask import Flask, request
 from data import Block, Blockchain
-from utils import calculate_average
 import requests
-
-
 
 
 app = Flask(__name__)

@@ -1,14 +1,18 @@
 from hashlib import sha256
 import json
+import time
+from utils import calculate_average
+
 
 
 class Block:
     def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
         self.index = index
-        self.transactions = transactions
         self.timestamp = timestamp
         self.previous_hash = previous_hash
         self.nonce = nonce
+        self.transactions = transactions
+
 
     def compute_hash(self):
         """
@@ -16,6 +20,7 @@ class Block:
         """
         block_string = json.dumps(self.__dict__, sort_keys=True)
         return sha256(block_string.encode()).hexdigest()
+
 
 
 class Blockchain:
@@ -118,13 +123,38 @@ class Blockchain:
 
         last_block = self.last_block
 
+        for tx in self.unconfirmed_transactions:
+            if tx.get('person') == tx.get('user'):
+                return "Un usuario no puede votar por si mismo."
+            if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
+                return "La calificacion debe estar entre 1 y 5"
+            
+            # Buscamos a la persona en el bloque anterior, si existe, promediamos:
+
+            for previous_tx in last_block.transactions:
+                if previous_tx.get('person') == tx.get('person'):
+                    print("Se ha encontrado el usuario en transacciones anteriores")
+                    avg = calculate_average(previous_tx.get('average_grade'), previous_tx.get('last_grade'), tx.get('last_grade'))
+                    print(avg, previous_tx.get('average_grade'), previous_tx.get('last_grade'), tx.get('last_grade'))
+
+                    # Update tx values
+                    tx['average_grade'] = avg
+                    break
+                else: 
+                    print("No se encontro el usuario en estra transaccion")
+        # Calculate averages:
+
+
+
         new_block = Block(index=last_block.index + 1,
                           transactions=self.unconfirmed_transactions,
                           timestamp=time.time(),
                           previous_hash=last_block.hash)
 
+
         proof = self.proof_of_work(new_block)
         self.add_block(new_block, proof)
+
 
         self.unconfirmed_transactions = []
 
