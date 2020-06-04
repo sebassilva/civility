@@ -139,6 +139,7 @@ class Blockchain:
 
                     # Update tx values
                     tx['average_grade'] = avg
+                    tx['votes'] = int(previous_tx.get('votes')) + 1
                     break
                 else: 
                     print("No se encontro el usuario en estra transaccion")
