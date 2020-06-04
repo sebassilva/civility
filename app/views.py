@@ -51,7 +51,6 @@ def submit_textarea():
     Endpoint to create a new transaction via our application.
     """
     post_content = request.form["content"]
-    author = request.form["author"]
 
     user = request.form["user"]
     person = request.form["person"]
@@ -63,7 +62,6 @@ def submit_textarea():
 
 
     post_object = {
-        'author': author,
         'content': post_content,
         'user': user,
         'person': person,

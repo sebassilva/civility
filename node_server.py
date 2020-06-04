@@ -150,7 +150,7 @@ peers = dict()
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
-    required_fields = ['user', 'person', 'grade', 'comment', 'signature']
+    required_fields = ['user', 'person', 'grade', 'comment']
 
     for field in required_fields:
         if not tx_data.get(field):
@@ -210,6 +210,7 @@ def register_new_peers():
 
     # Revisamos si no existe otro usuario registrado con el mismo curp
     curp = tx_data.get('curp')
+    user = tx_data.get('user')
     node_address = tx_data.get('node_address')
     
     # Hacemos una peticion interna para revisar si ya existe el curp dentro de los camps
@@ -221,13 +222,24 @@ def register_new_peers():
         # Mandar error de que este curp ya existe
         print("ESTE CURP YA EXISTE")
     else:
-        # Si no existe, llamar a la base de datos del SAT para pedir la llave pública
-        # Agregar las llaves públicas a los peers
+        # Si no existe, llamar a la base de datos del SAT para pedir la llave publica
+        # Agregar las llaves publicas a los peers
         print("AGREGANDO EL NUEVO CURP")
 
         # Add the node to the peer list
         peer = {'curp': curp, 'public_key': '123', 'node_address': node_address}
         peers[peer['curp']] = peer
+
+
+        # Add user to block chain
+        'user', 'person', 'grade', 'comment', 'signature'
+        new_user = {'user': 'BLOCKHAIN_GENERATED', 'person': user, 'grade': 2.5, 'comment': 'BLOCKCHAIN_GENERATED'}
+        response = requests.post(
+            '{}new_transaction'.format(request.host_url), 
+            data=json.dumps(new_user),
+            headers=headers)
+        print("data: ", response.content)
+
 
     # Return the consensus blockchain to the newly registered node
     # so that he can sync
