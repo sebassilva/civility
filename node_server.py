@@ -55,8 +55,8 @@ def get_chain():
 @app.route('/mine', methods=['GET'])
 def mine_unconfirmed_transactions():
     result = blockchain.mine()
-    if not result:
-        return "No transactions to mine"
+    if result != "Success":
+        return result
     else:
         # Making sure we have the longest chain before announcing to the network
         chain_length = len(blockchain.chain)
@@ -205,12 +205,14 @@ def consensus():
     found, our chain is replaced with it.
     """
     global blockchain
+    print("Consensus: ")
 
     longest_chain = None
     current_len = len(blockchain.chain)
 
     for node in peers:
-        response = requests.get('{}chain'.format(node))
+        print(peers[node])
+        response = requests.get('http://{}/chain'.format(peers[node].get('node_address')))
         length = response.json()['length']
         chain = response.json()['chain']
         if length > current_len and blockchain.check_chain_validity(chain):
@@ -231,7 +233,7 @@ def announce_new_block(block):
     respective chains.
     """
     for peer in peers:
-        url = "{}add_block".format(peer)
+        url = "http://{}/add_block".format(peers[peer].get('node_address'))
         headers = {'Content-Type': "application/json"}
         requests.post(url,
                       data=json.dumps(block.__dict__, sort_keys=True),

@@ -119,18 +119,22 @@ class Blockchain:
         and figuring out Proof Of Work.
         """
         if not self.unconfirmed_transactions:
-            return False
+            return "No hay transacciones que minar"
 
         last_block = self.last_block
 
+        # Recorremos el arreglo de transacciones que no se han minado
         for tx in self.unconfirmed_transactions:
+            print(tx.get('person'),  tx.get('user'))
             if tx.get('person') == tx.get('user'):
+                # Si hay más de una transacción inválida, se eliminan todas de momento
+                self.unconfirmed_transactions.remove(tx)
                 return "Un usuario no puede votar por si mismo."
             if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
+                self.unconfirmed_transactions.remove(tx)
                 return "La calificacion debe estar entre 1 y 5"
             
             # Buscamos a la persona en el bloque anterior, si existe, promediamos:
-
             for previous_tx in last_block.transactions:
                 if previous_tx.get('person') == tx.get('person'):
                     print("Se ha encontrado el usuario en transacciones anteriores")
@@ -143,20 +147,17 @@ class Blockchain:
                     break
                 else: 
                     print("No se encontro el usuario en estra transaccion")
-        # Calculate averages:
+                    # return "No se encontro el usuario en estra transaccion"
 
 
-
-        new_block = Block(index=last_block.index + 1,
+                new_block = Block(index=last_block.index + 1,
                           transactions=self.unconfirmed_transactions,
                           timestamp=time.time(),
                           previous_hash=last_block.hash)
 
 
-        proof = self.proof_of_work(new_block)
-        self.add_block(new_block, proof)
-
-
+                proof = self.proof_of_work(new_block)
+                self.add_block(new_block, proof)
         self.unconfirmed_transactions = []
 
-        return True
+        return "Success"
