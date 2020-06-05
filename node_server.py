@@ -21,7 +21,7 @@ peers = dict()
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
-    required_fields = ['user', 'person', 'last_grade', 'last_comment']
+    required_fields = ['user', 'person', 'last_grade', 'last_comment']  # firma
 
     for field in required_fields:
         if not tx_data.get(field):

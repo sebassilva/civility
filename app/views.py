@@ -52,7 +52,7 @@ def submit_textarea():
 
     user = request.form["user"]
     person = request.form["person"]
-    grade = request.form["grade"]
+    grade = int(request.form["grade"])
     comment = request.form["comment"]
     signature = request.form["signature"]
 
