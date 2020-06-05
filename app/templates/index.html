@@ -1,11 +1,47 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
-
 {% block content %}
-	<br>
+    <div class="jumbotron">
+      <div class="container">
+        <h1 class="display-4">Opina sobre las personas</h1>
+      </div>
+    </div>
 
-	<center>
-		<h1>Opina sobre las personas</h1>
+	<div class="container">
+		<form action="/submit" id="textform" method="post">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>Mi Usuario</label>
+					<input type="text" name="user" class="form-control" id="exampleFormControlInput1" placeholder="Calificador">
+				</div>
+				<div class="form-group col-md-6">
+					<label>A quien califico</label>
+					<input type="text" name="person" class="form-control" id="exampleFormControlInput1" placeholder="Calificado">
+				</div>
+				<div class="form-group col-md-12">
+					<label for="exampleFormControlTextarea1">Comentario</label>
+					<textarea name="comment" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="140 caracteres"></textarea>
+				</div>
+				<div class="form-group col-md-6">
+					<label>Calificación</label>
+					<select name="grade" id="inputState" class="form-control">
+					<option>0</option>
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+					<option>4</option>
+					<option selected>5</option>
+					</select>
+				</div>
+				<div class="form-group col-md-6">
+					<label>Firma digital</label>
+					<input type="text" name="signature" class="form-control" id="exampleFormControlInput3" placeholder="Firma">
+				</div>
+			</div>
+			<input type="submit" class="btn btn-primary"  value="Post">
+		</form>
+	</div>
+
 	<form action="/submit" id="textform" method="post">
 	    <br>
 	    <br>
@@ -21,63 +57,58 @@
 	    <br>
 	    <input type="submit" value="Post">
 	</form>
-	</center>
 
-	<br>
+	<div class="container" action="/submit_new_user" id="textform" method="post">
+		<form class="form-signin">
+			<h1 class="h3 mb-3 font-weight-normal">Registrar Usuario</h1>
+			<label class="sr-only">Nombre de Usuario</label>
+			<input type="text" name="user" class="form-control" placeholder="Nombre de Usuario" required>
 
-	<a href="{{node_address}}/mine" target="_blank"><button>Request to mine</button></a>
-	<a href="/"><button>Resync</button></a>
+			<label class="sr-only">Contraseña</label>
+			<input type="password" name="password" class="form-control" placeholder="Contraseña" required>
 
+			<label class="sr-only">Nombre</label>
+			<input type="text" name="first_name" class="form-control" placeholder="Nombre" required>
 
-	<br>
-	<br>
-	<br>
-	<br>
+			<label class="sr-only">Apellidos</label>
+			<input type="text" name="last_name" class="form-control" placeholder="Apellidos" required>
 
-	<center>
-		<h2>Registrar nuevos usuarios</h2>
-		<form action="/submit_new_user" id="textform" method="post">
-			<br>
-			<br>
-			<input type="text" name="user" placeholder="Usuario nuevo">
-			<br>
-			<input type="text" name="password" placeholder="Contraseña">
-			<br>
-			<input type="text" name="first_name" placeholder="Nombre">
-			<br>
-			<input type="text" name="last_name" placeholder="Apellidos">
-			<br>
-			<input type="text" name="curp" placeholder="Curp">
-			<input type="text" name="node_address" placeholder="node_address">
-			<br>
-			<input type="submit" value="Registrar">
-		</form>
-		</center>
+			<label class="sr-only">Curp</label>
+			<input type="text" name="curp" class="form-control" placeholder="Curp" required>
 
+			<label class="sr-only">Node</label>
+			<input type="text" name="node_address" class="form-control" placeholder="Node Address" required>
 
-
-
-	<div style="margin: 20px;">
-
-    {% for post in posts %}
-    <div class="post_box">
-	   <div class="post_box-header">
-	      <div class="post_box-options"><button class="option-btn">Reply</button></div>
-	      <div style="background: rgb(0, 97, 146) none repeat scroll 0% 0%; box-shadow: rgb(0, 97, 146) 0px 0px 0px 2px;" class="post_box-avatar">{{post.user[0]}}</div>
-	      <div class="name-header">{{post.person}}: {{post.average_grade}}</div>
-	      <div class="post_box-subtitle">
-			  Última Calificación<i>{{post.last_grade}}</i>
-				<br>
-			Último comentario: {{post.last_comment}}
-			
-			</div>
-	   </div>
-	   <div>
-	      <div class="post_box-body">
-	      </div>
-	   </div>
+			<input class="btn btn-lg btn-primary btn-block" type="submit" value="Registrar">
+		  </form>
 	</div>
-	{% endfor %}
+
+
+	<main role="main" class="container">
+		<div class="d-flex align-items-center p-3 my-3 text-white-50 bg-secondary rounded shadow-sm">
+		  <div class="lh-100">
+			<h6 class="mb-0 text-white lh-100">Civility</h6>
+			<small>Un vistazo a las personas</small>
+		  </div>
+		</div>
+	  
+		<div class="my-3 p-3 bg-white rounded shadow-sm">
+		  <h6 class="border-bottom border-gray pb-2 mb-0">Calificaciónes recientes</h6>
+		  {% for post in posts %}
+		  <div class="media text-muted pt-3">
+			<div style="background: rgb(0, 97, 146) none repeat scroll 0% 0%; box-shadow: rgb(0, 97, 146) 0px 0px 0px 2px;" class="post_box-avatar">{{post.user[0]}}</div>
+			<p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+			  <strong class="d-block text-gray-dark">@{{post.person}}: {{post.average_grade}}</strong>
+			  	{{post.last_grade}} Último comentario: {{post.last_comment}}
+			</p>
+		  </div>
+		  {% endfor %}
+
+
+		</div>
+
+	</main>
+
 
 	<style>
 		.post_box {
@@ -139,6 +170,35 @@
 		    margin-right: 2px;
 		    outline: none;
 		    height: 42px;
+		}
+		.form-signin {
+			width: 100%;
+			max-width: 330px;
+			padding: 15px;
+			margin: auto;
+		}
+		.form-signin .checkbox {
+			font-weight: 400;
+		}
+		.form-signin .form-control {
+			position: relative;
+			box-sizing: border-box;
+			height: auto;
+			padding: 10px;
+			font-size: 16px;
+		}
+		.form-signin .form-control:focus {
+			z-index: 2;
+		}
+		.form-signin input[type="email"] {
+			margin-bottom: -1px;
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		.form-signin input[type="password"] {
+			margin-bottom: 10px;
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
 		}
 	</style>
     </div>
