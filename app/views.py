@@ -43,6 +43,23 @@ def index():
                            node_address=CONNECTED_NODE_ADDRESS,
                            readable_time=timestamp_to_string)
 
+@app.route('/registro')
+def registro():
+    fetch_posts()
+    return render_template('registro.html',
+                           title='Civility: un vistazo a las personas',
+                           posts=posts,
+                           node_address=CONNECTED_NODE_ADDRESS,
+                           readable_time=timestamp_to_string)
+
+@app.route('/califica')
+def califica():
+    fetch_posts()
+    return render_template('califica.html',
+                           title='Civility: un vistazo a las personas',
+                           posts=posts,
+                           node_address=CONNECTED_NODE_ADDRESS,
+                           readable_time=timestamp_to_string)
 
 @app.route('/submit', methods=['POST'])
 def submit_textarea():

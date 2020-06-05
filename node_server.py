@@ -177,6 +177,7 @@ def create_chain_from_dump(chain_dump):
 # and then added to the chain.
 @app.route('/add_block', methods=['POST'])
 def verify_and_add_block():
+    print("Add block requested")
     block_data = request.get_json()
     block = Block(block_data["index"],
                   block_data["transactions"],

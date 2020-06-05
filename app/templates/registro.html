@@ -2,39 +2,30 @@
 {% extends "base.html" %}
 {% block content %}
 
-	<div class="jumbotron">
-		<div class="container">
-		<h1 class="display-3">{{ title }}</h1>
-		<p class="lead">Civility app es un sistema de calificación de civilidad implementada con blockchain. Los usuarios podrán calificar positiva o negativamente a otros usuarios basados en sus experiencias por medio de una calificación del 1 al 5 y un comentario que justifique su crítica.</p>
-		<p class="lead">
-			<a class="btn btn-info btn-lg" href="/califica" role="button">Calificar</a>
-			<a class="btn btn-success btn-lg" href="/registro" role="button">Registrarte</a>
-		</p>
-		</div>
+	<div class="container">
+		<form class="form-signin" action="/submit_new_user" id="textform" method="post">
+			<h1 class="h3 mb-3 font-weight-normal">Registrar Usuario</h1>
+			<label class="sr-only">Nombre de Usuario</label>
+			<input type="text" name="user" class="form-control" placeholder="Nombre de Usuario" required>
+
+			<label class="sr-only">Contraseña</label>
+			<input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+
+			<label class="sr-only">Nombre</label>
+			<input type="text" name="first_name" class="form-control" placeholder="Nombre" required>
+
+			<label class="sr-only">Apellidos</label>
+			<input type="text" name="last_name" class="form-control" placeholder="Apellidos" required>
+
+			<label class="sr-only">Curp</label>
+			<input type="text" name="curp" class="form-control" placeholder="Curp" required>
+
+			<label class="sr-only">Node</label>
+			<input type="text" name="node_address" class="form-control" placeholder="Node Address" required>
+
+			<input class="btn btn-lg btn-primary btn-block" type="submit" value="Registrar">
+		  </form>
 	</div>
-
-	<main role="main" class="container">
-		<div class="d-flex align-items-center p-3 my-3 text-white-50 bg-secondary rounded shadow-sm">
-		  <div class="lh-100">
-			<h6 class="mb-0 text-white lh-100">Civility</h6>
-			<small>Un vistazo a las personas</small>
-		  </div>
-		</div>
-	  
-		<div class="my-3 p-3 bg-white rounded shadow-sm">
-		  <h6 class="border-bottom border-gray pb-2 mb-0">Calificaciónes recientes</h6>
-		  {% for post in posts %}
-		  <div class="media text-muted pt-3">
-			<div style="background: rgb(0, 97, 146) none repeat scroll 0% 0%; box-shadow: rgb(0, 97, 146) 0px 0px 0px 2px;" class="post_box-avatar">{{post.user[0]}}</div>
-			<p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-			  <strong class="d-block text-gray-dark">@{{post.person}}: {{post.average_grade}}</strong>
-			  	{{post.last_grade}} Último comentario: {{post.last_comment}}
-			</p>
-		  </div>
-		  {% endfor %}
-		</div>
-
-	</main>
 
 	<style>
 		.post_box {
