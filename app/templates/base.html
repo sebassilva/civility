@@ -26,7 +26,7 @@
             <a class="nav-link" href="{{node_address}}/mine" target="_blank">Minar</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link"  href="#">Refresh<span class="sr-only">(current)</span></a>
+            <a class="nav-link"  href="javascript:history.go(0)">Refresh</a>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
@@ -34,19 +34,6 @@
         </form>
       </div>
     </nav>
-
-    <div class="jumbotron pt-12 pb-12" style='background-image:url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80);background-size: cover;color: white;}'>
-      <div class="container">
-        <h1 class="display-3 ">{{ title }}</h1>
-        <div class="col-md-9 pt-4 pb-4">
-         <p class="lead">Civility app es un sistema de calificación de civilidad implementada con blockchain. Los usuarios califican positiva o negativamente personas basados en sus experiencias por medio de una calificación del 1 al 5 y un comentario que justifique su crítica.</p>
-        </div>
-        <p class="lead">
-          <a class="btn btn-info btn-lg" href="#" role="button">Calificar</a>
-          <a class="btn btn-success btn-lg" href="#" role="button">Registrarte</a>
-        </p>
-      </div>
-    </div>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
