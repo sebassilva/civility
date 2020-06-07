@@ -3,6 +3,7 @@ import time
 
 from flask import Flask, request
 from data import Block, Blockchain
+import ECC
 import requests
 
 
@@ -96,9 +97,15 @@ def register_new_peers():
         # Si no existe, llamar a la base de datos del SAT para pedir la llave publica
         # Agregar las llaves publicas a los peers
         print("AGREGANDO EL NUEVO CURP")
+        public_key, private_key = ECC.genKeyPair()
+        public_key = str(public_key)
+        private_key = str(private_key)
+        print(public_key, private_key)
 
         # Add the node to the peer list
-        peer = {'curp': curp, 'public_key': '123', 'node_address': node_address}
+
+
+        peer = {'curp': curp, 'public_key': public_key, 'node_address': node_address}
         peers[peer['curp']] = peer
 
 
@@ -117,10 +124,13 @@ def register_new_peers():
             headers=headers)
         print("data: ", response.content)
 
+    keys = {'public_key': public_key, 'private_key': private_key}
+    print(keys)
 
     # Return the consensus blockchain to the newly registered node
     # so that he can sync
-    return get_chain()
+    # return get_chain()
+    return json.dumps(keys)
 
 
 @app.route('/register_with', methods=['POST'])

@@ -108,13 +108,13 @@ def register_new_user():
     print('POST OBJETC', post_object)
 
     # TODO: Validate data
-    response = getKeyPair()
-    if not response:
-      # ERROR, INVALID CURP
-      return redirect('/')
+    # response = getKeyPair()
+    # if not response:
+    #   # ERROR, INVALID CURP
+    #   return redirect('/')
   
-    private_key, public_key = response
-    saveKeys(private_key, public_key)
+    # private_key, public_key = response
+    # saveKeys(private_key, public_key)
 
     # Submit a transaction
     new_tx_address = "{}/register_node".format(CONNECTED_NODE_ADDRESS)

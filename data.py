@@ -124,7 +124,7 @@ class Blockchain:
         last_block = self.last_block
 
         for tx in self.unconfirmed_transactions:
-            if verifySignature(tx):
+            if self.verifySignature(tx):
               if tx.get('person') == tx.get('user'):
                   return "Un usuario no puede votar por si mismo."
               if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
@@ -164,28 +164,31 @@ class Blockchain:
 
         return True
 
-    def verifySignature(vote):
+    def verifySignature(self, vote):
       signature = vote.get('signature')
       user = vote.get('user')
       
-      public_key = getPublicKey(user)
+      public_key = self.getPublicKey(user)
 
       vote_copy = {
-        user = vote.get("user")
-        person = vote.get("person")
-        grade = vote.get("grade")
-        comment = vote.get("comment")
+        'user':  vote.get("user"),
+        'person':  vote.get("person"),
+        'grade' : vote.get("grade"),
+        'comment':  vote.get("comment")
       }
 
       response = verify(voteToJson(vote_copy), signature, public_key)
 
       return True if response else False
 
-    def getPublicKey(user):
+    def getPublicKey(self, user):
       """
       Return public key from peers list in last block
       """
-      peers = this.chain[len(this.chain.length) - 1].peers
-      user = list(filter(lambda d: d['user'] in user, peers))
+      txs = self.chain[len(self.chain) - 1].transactions
+      if len(txs) > 0:
+        peers = txs[-1]['peers']
+        user = list(filter(lambda d: d['user'] in user, peers))
+        print(user)
       
-      return user.[1] if user else None
+      return user[1] if user else None
