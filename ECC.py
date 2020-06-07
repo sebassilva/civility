@@ -47,6 +47,8 @@ def verify(vote, signature, public_key):
   except ValueError:
     return False
 
+def voteToJson(vote):
+  return json.dumps(vote)
 ''' USE EXAMPLE '''
 '''
 # USER REQUEST TO GETKEYS from SAT

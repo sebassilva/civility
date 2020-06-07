@@ -2,7 +2,7 @@ from hashlib import sha256
 import json
 import time
 from utils import calculate_average
-
+from ECC import verify, voteToJson
 
 
 class Block:
@@ -124,14 +124,15 @@ class Blockchain:
         last_block = self.last_block
 
         for tx in self.unconfirmed_transactions:
-            if tx.get('person') == tx.get('user'):
-                return "Un usuario no puede votar por si mismo."
-            if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
-                return "La calificacion debe estar entre 1 y 5"
-            
-            # Buscamos a la persona en el bloque anterior, si existe, promediamos:
+            if verifySignature(tx):
+              if tx.get('person') == tx.get('user'):
+                  return "Un usuario no puede votar por si mismo."
+              if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
+                  return "La calificacion debe estar entre 1 y 5"
+              
+              # Buscamos a la persona en el bloque anterior, si existe, promediamos:
 
-            for previous_tx in last_block.transactions:
+              for previous_tx in last_block.transactions:
                 if previous_tx.get('person') == tx.get('person'):
                     print("Se ha encontrado el usuario en transacciones anteriores")
                     avg = calculate_average(previous_tx.get('average_grade'), previous_tx.get('last_grade'), tx.get('last_grade'))
@@ -143,6 +144,8 @@ class Blockchain:
                     break
                 else: 
                     print("No se encontro el usuario en estra transaccion")
+            else:
+              return False
         # Calculate averages:
 
 
@@ -160,3 +163,29 @@ class Blockchain:
         self.unconfirmed_transactions = []
 
         return True
+
+    def verifySignature(vote):
+      signature = vote.get('signature')
+      user = vote.get('user')
+      
+      public_key = getPublicKey(user)
+
+      vote_copy = {
+        user = vote.get("user")
+        person = vote.get("person")
+        grade = vote.get("grade")
+        comment = vote.get("comment")
+      }
+
+      response = verify(voteToJson(vote_copy), signature, public_key)
+
+      return True if response else False
+
+    def getPublicKey(user):
+      """
+      Return public key from peers list in last block
+      """
+      peers = this.chain[len(this.chain.length) - 1].peers
+      user = list(filter(lambda d: d['user'] in user, peers))
+      
+      return user.[1] if user else None

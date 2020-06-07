@@ -5,7 +5,8 @@ import requests
 from flask import render_template, redirect, request
 
 from app import app
-
+from sat import getKeyPair
+from ECC import saveKeys, getPrivateKey, getPublicKey, sign, voteToJson
 # The node with which our application interacts, there can be multiple
 # such nodes as well.
 CONNECTED_NODE_ADDRESS = "http://127.0.0.1:8001"
@@ -54,18 +55,19 @@ def submit_textarea():
     person = request.form["person"]
     grade = request.form["grade"]
     comment = request.form["comment"]
-    signature = request.form["signature"]
-
-
-
+    #signature = request.form["signature"]
 
     post_object = {
         'user': user,
         'person': person,
         'last_grade': grade,
         'last_comment': comment,
-        'signature': signature,
     }
+
+    private_key = getPrivateKey()
+    signature = sign(voteToJson(post_object))
+
+    post_object['signature'] = signature
 
     # TODO: Validate data
 
@@ -95,7 +97,6 @@ def register_new_user():
     curp = request.form["curp"]
     node_address = request.form["node_address"]
 
-
     post_object = {
         'user': user,
         'password': password,
@@ -107,6 +108,13 @@ def register_new_user():
     print('POST OBJETC', post_object)
 
     # TODO: Validate data
+    response = getKeyPair()
+    if not response:
+      # ERROR, INVALID CURP
+      return redirect('/')
+  
+    private_key, public_key = response
+    saveKeys(private_key, public_key)
 
     # Submit a transaction
     new_tx_address = "{}/register_node".format(CONNECTED_NODE_ADDRESS)
