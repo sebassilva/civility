@@ -98,9 +98,12 @@ def register_new_peers():
         # Si no existe, llamar a la base de datos del SAT para pedir la llave publica
         # Agregar las llaves publicas a los peers
         print("AGREGANDO EL NUEVO CURP")
-        public_key, private_key = ECC.genKeyPair()
+        private_key, public_key = ECC.genKeyPair()
+        print(" \nBEFORE")
+        print(public_key, private_key)
         public_key = public_key.export_key(format='PEM')
         private_key = private_key.export_key(format='PEM')
+        print('AFTER ')
         print(public_key, private_key)
 
         # Add the node to the peer list
@@ -221,7 +224,7 @@ def consensus():
     current_len = len(blockchain.chain)
 
     for node in peers:
-        response = requests.get('{}chain'.format(node))
+        response = requests.get('{}chain'.format(node.get('node_address')))
         length = response.json()['length']
         chain = response.json()['chain']
         if length > current_len and blockchain.check_chain_validity(chain):

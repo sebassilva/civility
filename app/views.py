@@ -1,5 +1,5 @@
 import datetime
-import json
+import json, codecs
 
 import requests
 from flask import render_template, redirect, request
@@ -65,11 +65,11 @@ def submit_textarea():
     }
 
     private_key = getPrivateKey()
-    print(voteToJson(post_object), private_key)
     print(type(voteToJson(post_object)), type(private_key))
     print(type(private_key))
     signature = sign(voteToJson(post_object), private_key)
-    print("SIGNATURE", signature)
+    signature = codecs.encode(signature, 'hex_codec')
+    print("SIGNATURE", signature, type(signature))
 
     post_object['signature'] = signature
 

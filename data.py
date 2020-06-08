@@ -2,7 +2,7 @@ from hashlib import sha256
 import json
 import time
 from utils import calculate_average
-from ECC import verify, voteToJson
+from ECC import verify, voteToJson, getPublicKey
 
 
 class Block:
@@ -124,6 +124,7 @@ class Blockchain:
         last_block = self.last_block
 
         for tx in self.unconfirmed_transactions:
+            print('verify signature: ', self.verifySignature(tx))
             if self.verifySignature(tx):
               if tx.get('person') == tx.get('user'):
                   return "Un usuario no puede votar por si mismo."
@@ -175,10 +176,10 @@ class Blockchain:
       public_key = self.getPublicKey(user)
 
       vote_copy = {
-        'user':  vote.get("user"),
         'person':  vote.get("person"),
-        'grade' : vote.get("grade"),
-        'comment':  vote.get("comment")
+        'last_comment':  vote.get("last_comment"),
+        'user':  vote.get("user"),
+        'last_grade' : vote.get("last_grade")
       }
 
       response = verify(voteToJson(vote_copy), signature, public_key)
@@ -189,10 +190,12 @@ class Blockchain:
       """
       Return public key from peers list in last block
       """
-      txs = self.chain[len(self.chain) - 1].transactions
-      if len(txs) > 0:
-        peers = txs[-1]['peers']
-        user = list(filter(lambda d: d['user'] in user, peers))
-        print(user)
+      return getPublicKey()
+
+    #   block = self.chain[len(self.chain) - 1].transactions
+    #   if len(txs) > 0:
+    #     peers = txs[-1]['peers']
+    #     user = list(filter(lambda d: d['user'] in user, peers))
+    #     print(user)
       
-      return user[1] if user else None
+    #   return user[1] if user else None

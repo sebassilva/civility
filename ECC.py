@@ -34,6 +34,7 @@ def getPublicKey():
 
 ''' Sign & Verify '''
 def sign(vote, private_key):
+  print('VOTE: ', vote)
   h = SHA256.new(vote.encode("utf8"))
   print('h', h)
   signer = DSS.new(private_key, 'fips-186-3')
@@ -45,6 +46,9 @@ def sign(vote, private_key):
 def verify(vote, signature, public_key):
   print('vote', 'signature', 'publick_key')
   print(vote, signature, public_key)
+  signature = bytes.fromhex(signature)
+  print(vote, signature, public_key)
+
   h = SHA256.new(vote.encode("utf8"))
   verifier = DSS.new(public_key, 'fips-186-3')
   try:
