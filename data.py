@@ -1,6 +1,5 @@
 from hashlib import sha256
-import json
-import time
+import json, time, copy
 from utils import calculate_average
 from ECC import verify, voteToJson, getPublicKey
 
@@ -121,7 +120,7 @@ class Blockchain:
         if not self.unconfirmed_transactions:
             return False
 
-        last_block = self.last_block
+        last_block = copy.deepcopy(self.last_block)
 
         for tx in self.unconfirmed_transactions:
             print('verify signature: ', self.verifySignature(tx))
@@ -131,28 +130,28 @@ class Blockchain:
               if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
                   return "La calificacion debe estar entre 1 y 5"
               
-              # Buscamos a la persona en el bloque anterior, si existe, promediamos:
+            # Buscamos a la persona en el bloque anterior, si existe, promediamos:
+  
 
-              for previous_tx in last_block.transactions:
+            found_previous = False
+            for previous_tx in last_block.transactions:
                 if previous_tx.get('person') == tx.get('person'):
                     print("Se ha encontrado el usuario en transacciones anteriores")
                     avg = calculate_average(previous_tx.get('average_grade'), previous_tx.get('last_grade'), tx.get('last_grade'))
                     print(avg, previous_tx.get('average_grade'), previous_tx.get('last_grade'), tx.get('last_grade'))
 
                     # Update tx values
-                    tx['average_grade'] = avg
-                    tx['votes'] = int(previous_tx.get('votes')) + 1
-                    break
-                else: 
-                    print("No se encontro el usuario en estra transaccion")
-            else:
-              return False
-        # Calculate averages:
-
+                    previous_tx['average_grade'] = avg
+                    previous_tx['votes'] = int(previous_tx.get('votes')) + 1
+                    found_previous = True
+            
+           
+            if len(last_block.transactions) == 0:
+                last_block.transactions.append(tx)
 
 
         new_block = Block(index=last_block.index + 1,
-                          transactions=self.unconfirmed_transactions,
+                          transactions=last_block.transactions,
                           timestamp=time.time(),
                           previous_hash=last_block.hash)
 
