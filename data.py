@@ -134,6 +134,7 @@ class Blockchain:
   
 
             found_previous = False
+            print("last_block.transactions: ", last_block.transactions)
             for previous_tx in last_block.transactions:
                 if previous_tx.get('person') == tx.get('person'):
                     print("Se ha encontrado el usuario en transacciones anteriores")
@@ -143,10 +144,15 @@ class Blockchain:
                     # Update tx values
                     previous_tx['average_grade'] = avg
                     previous_tx['votes'] = int(previous_tx.get('votes')) + 1
+                    previous_tx['last_comment'] =tx.get('last_comment')
+                    previous_tx['last_grade'] =tx.get('last_grade')
                     found_previous = True
+                    
+                else:
+                    print("No se ha enontrado el usuario en transacciones pasadas")
             
            
-            if len(last_block.transactions) == 0:
+            if not found_previous:
                 last_block.transactions.append(tx)
 
 
@@ -189,7 +195,7 @@ class Blockchain:
       """
       Return public key from peers list in last block
       """
-      return getPublicKey()
+      return getPublicKey(user)
 
     #   block = self.chain[len(self.chain) - 1].transactions
     #   if len(txs) > 0:

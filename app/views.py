@@ -64,7 +64,7 @@ def submit_textarea():
         'last_comment': comment,
     }
 
-    private_key = getPrivateKey()
+    private_key = getPrivateKey(user)
     print(type(voteToJson(post_object)), type(private_key))
     print(type(private_key))
     signature = sign(voteToJson(post_object), private_key)
@@ -124,7 +124,7 @@ def register_new_user():
         return response
     private_key, public_key = response['private_key'], response['public_key']
     print(private_key, public_key)
-    saveKeys(private_key, public_key)
+    saveKeys(private_key, public_key, user)
 
     return redirect('/')
 

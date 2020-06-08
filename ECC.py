@@ -20,16 +20,16 @@ def saveKey(key, filename):
   f.write(key)
   f.close()
 
-def saveKeys(private_key, public_key):
-  saveKey(public_key, 'pubkey.pem')
-  saveKey(private_key, 'privkey.pem')
+def saveKeys(private_key, public_key, user):
+  saveKey(public_key, '{}_public.pem'.format(user))
+  saveKey(private_key, '{}_private.pem'.format(user))
 
 ''' Key importing '''
-def getPrivateKey():
-  return ECC.import_key(open('privkey.pem').read())
+def getPrivateKey(user):
+  return ECC.import_key(open('{}_private.pem'.format(user)).read())
 
-def getPublicKey():
-  return ECC.import_key(open('pubkey.pem').read())
+def getPublicKey(user):
+  return ECC.import_key(open('{}_public.pem'.format(user)).read())
 
 
 ''' Sign & Verify '''
