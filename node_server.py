@@ -93,13 +93,14 @@ def register_new_peers():
     if curp in current_peers:
         # Mandar error de que este curp ya existe
         print("ESTE CURP YA EXISTE")
+        return {'error': 'Ya existe otro usuario registrado con este CURP.'}
     else:
         # Si no existe, llamar a la base de datos del SAT para pedir la llave publica
         # Agregar las llaves publicas a los peers
         print("AGREGANDO EL NUEVO CURP")
         public_key, private_key = ECC.genKeyPair()
-        public_key = str(public_key)
-        private_key = str(private_key)
+        public_key = public_key.export_key(format='PEM')
+        private_key = private_key.export_key(format='PEM')
         print(public_key, private_key)
 
         # Add the node to the peer list
@@ -124,8 +125,8 @@ def register_new_peers():
             headers=headers)
         print("data: ", response.content)
 
-    keys = {'public_key': public_key, 'private_key': private_key}
-    print(keys)
+        keys = {'public_key': public_key, 'private_key': private_key}
+        print(keys)
 
     # Return the consensus blockchain to the newly registered node
     # so that he can sync

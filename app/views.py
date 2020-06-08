@@ -65,7 +65,11 @@ def submit_textarea():
     }
 
     private_key = getPrivateKey()
-    signature = sign(voteToJson(post_object))
+    print(voteToJson(post_object), private_key)
+    print(type(voteToJson(post_object)), type(private_key))
+    print(type(private_key))
+    signature = sign(voteToJson(post_object), private_key)
+    print("SIGNATURE", signature)
 
     post_object['signature'] = signature
 
@@ -107,25 +111,22 @@ def register_new_user():
     }
     print('POST OBJETC', post_object)
 
-    # TODO: Validate data
-    # response = getKeyPair()
-    # if not response:
-    #   # ERROR, INVALID CURP
-    #   return redirect('/')
-  
-    # private_key, public_key = response
-    # saveKeys(private_key, public_key)
-
     # Submit a transaction
     new_tx_address = "{}/register_node".format(CONNECTED_NODE_ADDRESS)
 
-    requests.post(new_tx_address,
+    response = requests.post(new_tx_address,
                   json=post_object,
                   headers={'Content-type': 'application/json'})
     print(new_tx_address)
+    response = json.loads(response.content)
+    print("RESPONSe", response)
+    if response.get('error'):
+        return response
+    private_key, public_key = response['private_key'], response['public_key']
+    print(private_key, public_key)
+    saveKeys(private_key, public_key)
 
     return redirect('/')
-
 
 
 

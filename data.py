@@ -167,6 +167,10 @@ class Blockchain:
     def verifySignature(self, vote):
       signature = vote.get('signature')
       user = vote.get('user')
+
+      # Si la cadena la genera el propio blockchain, no existe firma. Al menos todavia
+      if user == 'BLOCKHAIN_GENERATED':
+          return True
       
       public_key = self.getPublicKey(user)
 

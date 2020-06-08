@@ -16,7 +16,8 @@ def genKeyPair():
 ''' Key exporting '''
 def saveKey(key, filename):
   f = open(filename,'wt')
-  f.write(key.export_key(format='PEM'))
+  # f.write(key.export_key(format='PEM'))
+  f.write(key)
   f.close()
 
 def saveKeys(private_key, public_key):
@@ -34,11 +35,16 @@ def getPublicKey():
 ''' Sign & Verify '''
 def sign(vote, private_key):
   h = SHA256.new(vote.encode("utf8"))
+  print('h', h)
   signer = DSS.new(private_key, 'fips-186-3')
+  print('signer', signer)
   signature = signer.sign(h)
+  print('signature', signature)
   return signature
 
 def verify(vote, signature, public_key):
+  print('vote', 'signature', 'publick_key')
+  print(vote, signature, public_key)
   h = SHA256.new(vote.encode("utf8"))
   verifier = DSS.new(public_key, 'fips-186-3')
   try:
