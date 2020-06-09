@@ -21,7 +21,7 @@ def saveKey(key, filename):
   f.close()
 
 def saveKeys(private_key, public_key, user):
-  saveKey(public_key, '{}_public.pem'.format(user))
+  # saveKey(public_key, '{}_public.pem'.format(user))
   saveKey(private_key, '{}_private.pem'.format(user))
 
 ''' Key importing '''

@@ -55,7 +55,7 @@ def get_chain():
 # a command to mine from our application itself.
 @app.route('/mine', methods=['GET'])
 def mine_unconfirmed_transactions():
-    result = blockchain.mine()
+    result = blockchain.mine(peers)
     if result != "Success":
         return result
     else:

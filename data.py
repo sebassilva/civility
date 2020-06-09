@@ -111,7 +111,7 @@ class Blockchain:
 
         return result
 
-    def mine(self):
+    def mine(self, peers):
         """
         This function serves as an interface to add the pending
         transactions to the blockchain by adding them to the block
@@ -124,8 +124,8 @@ class Blockchain:
 
         # Recorremos el arreglo de transacciones que no se han minado
         for tx in self.unconfirmed_transactions:
-            print('verify signature: ', self.verifySignature(tx))
-            if self.verifySignature(tx):
+            print('verify signature: ', self.verifySignature(tx, peers))
+            if self.verifySignature(tx, peers):
               if tx.get('person') == tx.get('user'):
                   return "Un usuario no puede votar por si mismo."
               if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
@@ -168,7 +168,7 @@ class Blockchain:
 
         return "Success"
 
-    def verifySignature(self, vote):
+    def verifySignature(self, vote, peers):
       signature = vote.get('signature')
       user = vote.get('user')
 
