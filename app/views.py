@@ -1,11 +1,12 @@
 import datetime
-import json
+import json, codecs
 
 import requests
 from flask import render_template, redirect, request
 
 from app import app
-
+from sat import getKeyPair
+from ECC import saveKeys, getPrivateKey, getPublicKey, sign, voteToJson
 # The node with which our application interacts, there can be multiple
 # such nodes as well.
 CONNECTED_NODE_ADDRESS = "http://127.0.0.1:8001"
@@ -71,18 +72,23 @@ def submit_textarea():
     person = request.form["person"]
     grade = int(request.form["grade"])
     comment = request.form["comment"]
-    signature = request.form["signature"]
-
-
-
+    #signature = request.form["signature"]
 
     post_object = {
         'user': user,
         'person': person,
         'last_grade': grade,
         'last_comment': comment,
-        'signature': signature,
     }
+
+    private_key = getPrivateKey(user)
+    print(type(voteToJson(post_object)), type(private_key))
+    print(type(private_key))
+    signature = sign(voteToJson(post_object), private_key)
+    signature = codecs.encode(signature, 'hex_codec')
+    print("SIGNATURE", signature, type(signature))
+
+    post_object['signature'] = signature
 
     # TODO: Validate data
 
@@ -112,7 +118,6 @@ def register_new_user():
     curp = request.form["curp"]
     node_address = request.form["node_address"]
 
-
     post_object = {
         'user': user,
         'password': password,
@@ -123,18 +128,22 @@ def register_new_user():
     }
     print('POST OBJETC', post_object)
 
-    # TODO: Validate data
-
     # Submit a transaction
     new_tx_address = "{}/register_node".format(CONNECTED_NODE_ADDRESS)
 
-    requests.post(new_tx_address,
+    response = requests.post(new_tx_address,
                   json=post_object,
                   headers={'Content-type': 'application/json'})
     print(new_tx_address)
+    response = json.loads(response.content)
+    print("RESPONSe", response)
+    if response.get('error'):
+        return response
+    private_key, public_key = response['private_key'], response['public_key']
+    print(private_key, public_key)
+    saveKeys(private_key, public_key, user)
 
     return redirect('/')
-
 
 
 

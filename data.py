@@ -1,8 +1,7 @@
 from hashlib import sha256
-import json
-import time
+import json, time, copy
 from utils import calculate_average
-
+from ECC import verify, voteToJson, getPublicKey
 
 
 class Block:
@@ -121,20 +120,22 @@ class Blockchain:
         if not self.unconfirmed_transactions:
             return "No hay transacciones que minar"
 
-        last_block = self.last_block
+        last_block = copy.deepcopy(self.last_block)
 
         # Recorremos el arreglo de transacciones que no se han minado
         for tx in self.unconfirmed_transactions:
-            print(tx.get('person'),  tx.get('user'))
-            if tx.get('person') == tx.get('user'):
-                # Si hay más de una transacción inválida, se eliminan todas de momento
-                self.unconfirmed_transactions.remove(tx)
-                return "Un usuario no puede votar por si mismo."
-            if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
-                self.unconfirmed_transactions.remove(tx)
-                return "La calificacion debe estar entre 1 y 5"
-            
+            print('verify signature: ', self.verifySignature(tx))
+            if self.verifySignature(tx):
+              if tx.get('person') == tx.get('user'):
+                  return "Un usuario no puede votar por si mismo."
+              if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
+                  return "La calificacion debe estar entre 1 y 5"
+              
             # Buscamos a la persona en el bloque anterior, si existe, promediamos:
+  
+
+            found_previous = False
+            print("last_block.transactions: ", last_block.transactions)
             for previous_tx in last_block.transactions:
                 if previous_tx.get('person') == tx.get('person'):
                     print("Se ha encontrado el usuario en transacciones anteriores")
@@ -142,12 +143,25 @@ class Blockchain:
                     print(avg, previous_tx.get('average_grade'), previous_tx.get('last_grade'), tx.get('last_grade'))
 
                     # Update tx values
-                    tx['average_grade'] = avg
-                    tx['votes'] = int(previous_tx.get('votes')) + 1
-                    break
-                else: 
-                    print("No se encontro el usuario en estra transaccion")
-                    # return "No se encontro el usuario en estra transaccion"
+                    previous_tx['average_grade'] = avg
+                    previous_tx['votes'] = int(previous_tx.get('votes')) + 1
+                    previous_tx['last_comment'] =tx.get('last_comment')
+                    previous_tx['last_grade'] =tx.get('last_grade')
+                    found_previous = True
+                    
+                else:
+                    print("No se ha enontrado el usuario en transacciones pasadas")
+            
+           
+            if not found_previous:
+                last_block.transactions.append(tx)
+
+
+        new_block = Block(index=last_block.index + 1,
+                          transactions=last_block.transactions,
+                          timestamp=time.time(),
+                          previous_hash=last_block.hash)
+
 
 
             new_block = Block(index=last_block.index + 1,
@@ -159,4 +173,39 @@ class Blockchain:
             self.add_block(new_block, proof)
         self.unconfirmed_transactions = []
 
-        return "Success"
+        return True
+
+    def verifySignature(self, vote):
+      signature = vote.get('signature')
+      user = vote.get('user')
+
+      # Si la cadena la genera el propio blockchain, no existe firma. Al menos todavia
+      if user == 'BLOCKHAIN_GENERATED':
+          return True
+      
+      public_key = self.getPublicKey(user)
+
+      vote_copy = {
+        'person':  vote.get("person"),
+        'last_comment':  vote.get("last_comment"),
+        'user':  vote.get("user"),
+        'last_grade' : vote.get("last_grade")
+      }
+
+      response = verify(voteToJson(vote_copy), signature, public_key)
+
+      return True if response else False
+
+    def getPublicKey(self, user):
+      """
+      Return public key from peers list in last block
+      """
+      return getPublicKey(user)
+
+    #   block = self.chain[len(self.chain) - 1].transactions
+    #   if len(txs) > 0:
+    #     peers = txs[-1]['peers']
+    #     user = list(filter(lambda d: d['user'] in user, peers))
+    #     print(user)
+      
+    #   return user[1] if user else None

@@ -1,2 +1,4 @@
 Flask~=1.1
 requests~=2.22
+pycrypto
+pycryptodome
