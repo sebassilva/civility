@@ -28,8 +28,8 @@ def saveKeys(private_key, public_key, user):
 def getPrivateKey(user):
   return ECC.import_key(open('{}_private.pem'.format(user)).read())
 
-def getPublicKey(user):
-  return ECC.import_key(open('{}_public.pem'.format(user)).read())
+def getPublicKey(user, peers):
+  return ECC.import_key(peers[user]['public_key'])
 
 
 ''' Sign & Verify '''

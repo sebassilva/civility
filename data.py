@@ -158,22 +158,15 @@ class Blockchain:
 
 
         new_block = Block(index=last_block.index + 1,
-                          transactions=last_block.transactions,
-                          timestamp=time.time(),
-                          previous_hash=last_block.hash)
-
-
-
-            new_block = Block(index=last_block.index + 1,
-                        transactions=self.unconfirmed_transactions,
+                        transactions=last_block.transactions,
                         timestamp=time.time(),
                         previous_hash=last_block.hash)
 
-            proof = self.proof_of_work(new_block)
-            self.add_block(new_block, proof)
+        proof = self.proof_of_work(new_block)
+        self.add_block(new_block, proof)
         self.unconfirmed_transactions = []
 
-        return True
+        return "Success"
 
     def verifySignature(self, vote):
       signature = vote.get('signature')
@@ -183,7 +176,7 @@ class Blockchain:
       if user == 'BLOCKHAIN_GENERATED':
           return True
       
-      public_key = self.getPublicKey(user)
+      public_key = self.getPublicKey(user, peers)
 
       vote_copy = {
         'person':  vote.get("person"),
@@ -196,11 +189,11 @@ class Blockchain:
 
       return True if response else False
 
-    def getPublicKey(self, user):
+    def getPublicKey(self, user, peers):
       """
       Return public key from peers list in last block
       """
-      return getPublicKey(user)
+      return getPublicKey(user, peers)
 
     #   block = self.chain[len(self.chain) - 1].transactions
     #   if len(txs) > 0:
