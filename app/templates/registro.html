@@ -3,25 +3,53 @@
 {% block content %}
 
 	<div class="container">
-		<form class="form-signin" action="/submit_new_user" id="textform" method="post">
-			<h1 class="h3 mb-3 font-weight-normal">Registrar Usuario</h1>
-			<label class="sr-only">Nombre de Usuario</label>
-			<input type="text" name="user" class="form-control" placeholder="Nombre de Usuario" required>
+		<form class="form-signin needs-validation" novalidate action="/submit_new_user" id="textform" method="post">
+			<div class="form-group">
+				<h1 class="h3 mb-3 font-weight-normal">Registrar Usuario</h1>
+				<label class="sr-only">Nombre de Usuario</label>
+				<input type="text" name="user" class="form-control" placeholder="Nombre de Usuario" required/>
+			</div>
 
-			<label class="sr-only">Contraseña</label>
-			<input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+			
+			<div class="form-group">
+				<label class="sr-only">Contraseña</label>
+				<input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+				<div class="invalid-feedback">
+					Elija una contraseña.
+				</div>
+			</div>
 
-			<label class="sr-only">Nombre</label>
-			<input type="text" name="first_name" class="form-control" placeholder="Nombre" required>
+			<div class="form-group">
+				<label class="sr-only">Nombre</label>
+				<input type="text" name="first_name" class="form-control" placeholder="Nombre" required>
+				<div class="invalid-feedback">
+					Escriba un nombre.
+				</div>
+			</div>
 
-			<label class="sr-only">Apellidos</label>
-			<input type="text" name="last_name" class="form-control" placeholder="Apellidos" required>
+			<div class="form-group">
+				<label class="sr-only">Apellidos</label>
+				<input type="text" name="last_name" class="form-control" placeholder="Apellidos" required>
+				<div class="invalid-feedback">
+					Escriba un apellido.
+				</div>
+			</div>
 
-			<label class="sr-only">Curp</label>
-			<input type="text" name="curp" class="form-control" placeholder="Curp" required>
+			<div class="form-group">
+				<label class="sr-only">Curp</label>
+				<input type="text" name="curp" class="form-control" placeholder="Curp" required>
+				<div class="invalid-feedback">
+					Escriba un Curp valido.
+				</div>
+			</div>
 
-			<label class="sr-only">Node</label>
-			<input type="text" name="node_address" class="form-control" placeholder="Node Address" required>
+			<div class="form-group">
+				<label class="sr-only">Node</label>
+				<input type="text" name="node_address" class="form-control" placeholder="Node Address" required>
+				<div class="invalid-feedback">
+					Escriba una dirección ip/nodo valida.
+				</div>
+			</div>
 
 			<input class="btn btn-lg btn-primary btn-block" type="submit" value="Registrar">
 		  </form>
@@ -118,5 +146,79 @@
 			border-top-right-radius: 0;
 		}
 	</style>
+	<script>
+	$(document).ready(function() {
+		$('#textform').bootstrapValidator({
+			fields: {
+				user: {
+					validators: {
+						regexp: {
+							regexp: /^[a-zA-Z0-9]+$/i,
+							message: 'El nombre de usuario solo es valido con números o letras.'
+						}
+					}
+				},
+				password: {
+					validators: {
+						regexp: {
+							regexp: /^.{8,}/i,
+							message: 'Mínimo 8 caracteres'
+						}
+					}
+				},
+				first_name: {
+					validators: {
+						regexp: {
+							regexp: /^[a-zA-Z\s]+$/i,
+							message: 'El nombre solo acepta letras.'
+						}
+					}
+				},
+				last_name: {
+					validators: {
+						regexp: {
+							regexp: /^[a-zA-Z\s]+$/i,
+							message: 'El apellido solo acepta letras.'
+						}
+					}
+				},
+				curp: {
+					validators: {
+						regexp: {
+							regexp: /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/i,
+							message: 'Escriba un Curp valido.'
+						}
+					}
+				},
+				node_address: {
+					validators: {
+						regexp: {
+							regexp: /^(localhost:[0-9]+{0,4})|^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?|^((http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/i,
+							message: 'Escriba una dirección ip/nodo valida.'
+						}
+					}
+				}
+			}
+		});
+	});
+		// Example starter JavaScript for disabling form submissions if there are invalid fields
+		(function() {
+		'use strict';
+		window.addEventListener('load', function() {
+			// Fetch all the forms we want to apply custom Bootstrap validation styles to
+			var forms = document.getElementsByClassName('needs-validation');
+			// Loop over them and prevent submission
+			var validation = Array.prototype.filter.call(forms, function(form) {
+			form.addEventListener('submit', function(event) {
+				if (form.checkValidity() === false) {
+				event.preventDefault();
+				event.stopPropagation();
+				}
+				form.classList.add('was-validated');
+			}, false);
+			});
+		}, false);
+		})();
+	</script>
     </div>
 {% endblock %}

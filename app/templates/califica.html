@@ -8,7 +8,7 @@
     </div>
 
 	<div class="container">
-		<form action="/submit" id="textform" method="post">
+		<form class="needs-validation" novalidate action="/submit" id="textform" method="post">
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>Mi Usuario</label>
@@ -20,7 +20,7 @@
 				</div>
 				<div class="form-group col-md-12">
 					<label for="exampleFormControlTextarea1">Comentario</label>
-					<textarea name="comment" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="140 caracteres"></textarea>
+					<textarea name="comment" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Máximo 140 caracteres"></textarea>
 				</div>
 				<div class="form-group col-md-6">
 					<label>Calificación</label>
@@ -32,10 +32,6 @@
 					<option>4</option>
 					<option selected>5</option>
 					</select>
-				</div>
-				<div class="form-group col-md-6">
-					<label>Firma digital</label>
-					<input type="text" name="signature" class="form-control" id="exampleFormControlInput3" placeholder="Firma">
 				</div>
 			</div>
 			<input type="submit" class="btn btn-primary"  value="Post">
@@ -57,17 +53,30 @@
 			<div style="background: rgb(0, 97, 146) none repeat scroll 0% 0%; box-shadow: rgb(0, 97, 146) 0px 0px 0px 2px;" class="post_box-avatar">{{post.user[0]}}</div>
 			<p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
 			  <strong class="d-block text-gray-dark">@{{post.person}}: {{post.average_grade}}</strong>
-			  	{{post.last_grade}} Último comentario: {{post.last_comment}}
+			  	{%for i in range(0, post.last_grade)%} 
+				  	<span class="fa fa-star checked"></span>
+				{%endfor%}
+				{%for i in range(post.last_grade, 5)%} 
+						<span class="fa fa-star"></span>
+				{%endfor%}
+			  	Último comentario: {{post.last_comment}}
 			</p>
 		  </div>
 		  {% endfor %}
 
-
+		  <span class="fa fa-star checked"></span>
+		  <span class="fa fa-star checked"></span>
+		  <span class="fa fa-star checked"></span>
+		  <span class="fa fa-star"></span>
+		  <span class="fa fa-star"></span>
 		</div>
 
 	</main>
 
 	<style>
+		.checked {
+			color: orange;
+		}
 		.post_box {
 		    background: #fff;
 		    padding: 12px 0px 0px 12px;
@@ -158,5 +167,55 @@
 			border-top-right-radius: 0;
 		}
 	</style>
+		<script>
+	$(document).ready(function() {
+		$('#textform').bootstrapValidator({
+			fields: {
+				user: {
+					validators: {
+						regexp: {
+							regexp: /^[a-zA-Z0-9]+$/i,
+							message: 'El nombre de usuario solo es valido con números o letras.'
+						}
+					}
+				},
+				person: {
+					validators: {
+						regexp: {
+							regexp: /^[a-zA-Z0-9]+$/i,
+							message: 'El nombre de usuario solo es valido con números o letras.'
+						}
+					}
+				},
+				comment: {
+					validators: {
+						regexp: {
+							regexp: /^.{0,140}$/i,
+							message: 'Máximo 140 caracteres'
+						}
+					}
+				}
+			}
+		});
+	});
+		// Example starter JavaScript for disabling form submissions if there are invalid fields
+		(function() {
+		'use strict';
+		window.addEventListener('load', function() {
+			// Fetch all the forms we want to apply custom Bootstrap validation styles to
+			var forms = document.getElementsByClassName('needs-validation');
+			// Loop over them and prevent submission
+			var validation = Array.prototype.filter.call(forms, function(form) {
+			form.addEventListener('submit', function(event) {
+				if (form.checkValidity() === false) {
+				event.preventDefault();
+				event.stopPropagation();
+				}
+				form.classList.add('was-validated');
+			}, false);
+			});
+		}, false);
+		})();
+	</script>
     </div>
 {% endblock %}

@@ -124,8 +124,8 @@ def register_new_peers():
         new_user = {
             'user': 'BLOCKHAIN_GENERATED',
             'person': user,
-            'last_grade': 2.5, 
-            'average_grade': 2.5, 
+            'last_grade': 0, 
+            'average_grade': 0, 
             'votes': 1, 
             'last_comment': 'BLOCKCHAIN_GENERATED'}
         response = requests.post(
