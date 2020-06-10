@@ -128,8 +128,8 @@ class Blockchain:
             if self.verifySignature(tx, peers):
               if tx.get('person') == tx.get('user'):
                   return "Un usuario no puede votar por si mismo."
-              if int(tx.get('last_grade')) < 1 or int(tx.get('last_grade')) > 5:
-                  return "La calificacion debe estar entre 1 y 5"
+              if int(tx.get('last_grade')) < 0 or int(tx.get('last_grade')) > 5:
+                  return "La calificacion debe estar entre 0 y 5"
               
             # Buscamos a la persona en el bloque anterior, si existe, promediamos:
   
