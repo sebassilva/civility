@@ -116,7 +116,7 @@ def register_new_peers():
 
 
         peer = {'curp': curp, 'public_key': public_key, 'node_address': node_address}
-        peers[peer['curp']] = peer
+        peers[user] = peer
 
 
         # Add user to block chain

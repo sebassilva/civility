@@ -1,6 +1,9 @@
 *.pyc
 **/*.pyc
-
+**/*.pem
+**/.gitignore
+.DS_STORE
+**/*.pyc
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

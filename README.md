@@ -1,95 +1,96 @@
-# python_blockchain_app
+# Civility App
 
-A simple tutorial for developing a blockchain application from scratch in Python.
+## Un vistazo a las personas
 
-## What is blockchain? How it is implemented? And how it works?
+## Descripción
+Civility app es un sistema de calificación de civilidad implementada con blockchain. Los usuarios podrán calificar positiva o negativamente a otros usuarios basados en sus experiencias por medio de una calificación del 1 al 5 y un comentario que justifique su crítica.
 
-Please read the [step-by-step implementation tutorial](https://www.ibm.com/developerworks/cloud/library/cl-develop-blockchain-app-in-python/index.html) to get your answers :)
+Código original en [este tutorial](https://www.ibm.com/developerworks/cloud/library/cl-develop-blockchain-app-in-python/index.html).
 
-## Instructions to run
 
-Clone the project,
+## Instrucciones
+
+Clona el proyecto,
 
 ```sh
-$ git clone https://github.com/satwikkansal/python_blockchain_app.git
+$ git clone https://github.com/sebassilva/civility
 ```
 
-Install the dependencies,
 
-```sh
-$ cd python_blockchain_app
-$ pip install -r requirements.txt
+
+Crea un ambiente virtual, 
+Python 2.7
+
+```bash
+pip -h
+```
+```bash
+pip install virtualenv
+```
+```bash
+virtualenv env
+```
+Mac OS / Linux
+```bash
+source mypython/bin/activate
+```
+Windows
+```bash
+mypthon\Scripts\activate
 ```
 
-Start a blockchain node server,
+Instalar las dependencias
+```bash
+pip install -r ./requirements.txt
+```
+
+
+
+Inicia el primer nodo, repite este paso tantas veces como nodos quieras poner. Se recomiendan por lo menos 3 nodos. Es necesario ir cambiando el puerto, por ejemplo utilizando 8002 y 8003 y así consecutivamente. 
 
 ```sh
-# Windows users can follow this: https://flask.palletsprojects.com/en/1.1.x/cli/#application-discovery
+# Para usuarios de windows: https://flask.palletsprojects.com/en/1.1.x/cli/#application-discovery
 $ export FLASK_APP=node_server.py
-$ flask run --port 8000
+$ flask run --port 8001
 ```
 
-One instance of our blockchain node is now up and running at port 8000.
 
 
-Run the application on a different terminal session,
+Abre otra terminal y corre el cliente. 
+Opcionalmente, si deseas probar el frontend para que se conecte a otros nodos, puedes cambiar la línea: 
+```sh
+CONNECTED_NODE_ADDRESS = "http://127.0.0.1:8001"
+```
+al puerto que necesites.
 
 ```sh
 $ python run_app.py
 ```
 
-The application should be up and running at [http://localhost:5000](http://localhost:5000).
+El cliente estará corriendo en el puerto local[http://localhost:5000](http://localhost:5000). Lo puedes consultar desde tu navegador.
 
-Here are a few screenshots
 
-1. Posting some content
 
-![image.png](https://github.com/satwikkansal/python_blockchain_app/raw/master/screenshots/1.png)
 
-2. Requesting the node to mine
+Los pasos más importantes para llevar a cabo el procedimiento básico son: 
 
-![image.png](https://github.com/satwikkansal/python_blockchain_app/raw/master/screenshots/2.png)
-
-3. Resyncing with the chain for updated data
-
-![image.png](https://github.com/satwikkansal/python_blockchain_app/raw/master/screenshots/3.png)
-
-To play around by spinning off multiple custom nodes, use the `register_with/` endpoint to register a new node. 
-
-Here's a sample scenario that you might wanna try,
-
+1. Registrar dos usuarios. Es importante que en el campo de node address pongas el puerto en el que corre alguno de los otros nodos, por ejemplo. 
 ```sh
-# Make sure you set the FLASK_APP environment variable to node_server.py before running these nodes
-# already running
-$ flask run --port 8000 &
-# spinning up new nodes
-$ flask run --port 8001 &
-$ flask run --port 8002 &
+localhost:8002
 ```
+Nota que no se tiene la última diagonal ni tampoco http://.
 
-You can use the following cURL requests to register the nodes at port `8001` and `8002` with the already running `8000`.
 
-```sh
-curl -X POST \
-  http://127.0.0.1:8001/register_with \
-  -H 'Content-Type: application/json' \
-  -d '{"node_address": "http://127.0.0.1:8000"}'
-```
+2. Una vez que tienes los dos usuarios, es necesario dar click en el botón minar en el nodo en el que los registraste. Este nodo avisará a los demás nodos que hayas registrado. Si refrescas tu cliente, podrás ver en la parte de califiicaciones tus dos usuarios.
 
-```sh
-curl -X POST \
-  http://127.0.0.1:8002/register_with \
-  -H 'Content-Type: application/json' \
-  -d '{"node_address": "http://127.0.0.1:8000"}'
-```
+![image.png](/images/r.png)
 
-This will make the node at port 8000 aware of the nodes at port 8001 and 8002, and make the newer nodes sync the chain with the node 8000, so that they are able to actively participate in the mining process post registration.
+3. Ya puedes calificar a unos usuarios con otros. Probablemente habrás notado que en la raíz del proyecto se han guardado llaves privadas. No las borres, pues ya no podrías volver a registrarte.
 
-To update the node with which the frontend application syncs (default is localhost port 8000), change `CONNECTED_NODE_ADDRESS` field in the [views.py](/app/views.py) file.
 
-Once you do all this, you can run the application, create transactions (post messages via the web inteface), and once you mine the transactions, all the nodes in the network will update the chain. The chain of the nodes can also be inspected by inovking `/chain` endpoint using cURL.
 
-```sh
-$ curl -X GET http://localhost:8001/chain
-$ curl -X GET http://localhost:8002/chain
-```
+
+![image.png](/images/o.png)
+![image.png](/images/c.png)
+
+
