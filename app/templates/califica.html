@@ -25,7 +25,6 @@
 				<div class="form-group col-md-6">
 					<label>Calificación</label>
 					<select name="grade" id="inputState" class="form-control">
-					<option>0</option>
 					<option>1</option>
 					<option>2</option>
 					<option>3</option>
@@ -47,12 +46,12 @@
 		</div>
 	  
 		<div class="my-3 p-3 bg-white rounded shadow-sm">
-		  <h6 class="border-bottom border-gray pb-2 mb-0">Calificaciónes recientes</h6>
+		  <h6 class="border-bottom border-gray pb-2 mb-0">Calificaciones recientes</h6>
 		  {% for post in posts %}
 		  <div class="media text-muted pt-3">
 			<div style="background: rgb(0, 97, 146) none repeat scroll 0% 0%; box-shadow: rgb(0, 97, 146) 0px 0px 0px 2px;" class="post_box-avatar">{{post.user[0]}}</div>
 			<p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-			  <strong class="d-block text-gray-dark">@{{post.person}}: {{post.average_grade}}</strong>
+			  <strong class="d-block text-gray-dark">@{{post.person}}: <br> Calificación promedio: {{post.average_grade}}</strong>
 			  	{%for i in range(0, post.last_grade)%} 
 				  	<span class="fa fa-star checked"></span>
 				{%endfor%}
@@ -63,12 +62,6 @@
 			</p>
 		  </div>
 		  {% endfor %}
-
-		  <span class="fa fa-star checked"></span>
-		  <span class="fa fa-star checked"></span>
-		  <span class="fa fa-star checked"></span>
-		  <span class="fa fa-star"></span>
-		  <span class="fa fa-star"></span>
 		</div>
 
 	</main>

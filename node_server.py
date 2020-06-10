@@ -124,10 +124,11 @@ def register_new_peers():
         new_user = {
             'user': 'BLOCKHAIN_GENERATED',
             'person': user,
-            'last_grade': 0, 
-            'average_grade': 0, 
+            'last_grade': 5, 
+            'average_grade': 5, 
             'votes': 1, 
             'last_comment': 'BLOCKCHAIN_GENERATED'}
+        print(new_user)
         response = requests.post(
             '{}new_transaction'.format(request.host_url), 
             data=json.dumps(new_user),

@@ -27,8 +27,14 @@
 		  <div class="media text-muted pt-3">
 			<div style="background: rgb(0, 97, 146) none repeat scroll 0% 0%; box-shadow: rgb(0, 97, 146) 0px 0px 0px 2px;" class="post_box-avatar">{{post.user[0]}}</div>
 			<p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-			  <strong class="d-block text-gray-dark">@{{post.person}}: {{post.average_grade}}</strong>
-			  	{{post.last_grade}} Último comentario: {{post.last_comment}}
+			  <strong class="d-block text-gray-dark">@{{post.person}}: <br> Calificación promedio: {{post.average_grade}}</strong>
+			  	{%for i in range(0, post.last_grade)%} 
+				  	<span class="fa fa-star checked"></span>
+				{%endfor%}
+				{%for i in range(post.last_grade, 5)%} 
+						<span class="fa fa-star"></span>
+				{%endfor%}
+			  	Último comentario: {{post.last_comment}}
 			</p>
 		  </div>
 		  {% endfor %}
@@ -37,6 +43,9 @@
 	</main>
 
 	<style>
+		.checked {
+			color: orange;
+		}
 		.post_box {
 		    background: #fff;
 		    padding: 12px 0px 0px 12px;

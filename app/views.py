@@ -24,7 +24,8 @@ def fetch_posts():
     if response.status_code == 200:
         content = []
         chain = json.loads(response.content)
-        for block in chain["chain"]:
+        if chain['chain']:
+            block = chain["chain"][-1]
             for tx in block["transactions"]:
                 tx["index"] = block["index"]
                 tx["hash"] = block["previous_hash"]
